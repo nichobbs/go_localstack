@@ -1,22 +1,18 @@
-module github.com/mitchelldavis/go_localstack
+module github.com/nichobbs/go_localstack
 
-go 1.12
+go 1.15
 
 require (
+	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
+	github.com/Microsoft/go-winio v0.4.14 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
-	github.com/aws/aws-sdk-go v1.20.15
-	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
-	github.com/containerd/continuity v0.0.0-20181203112020-004b46473808 // indirect
+	github.com/aws/aws-sdk-go v1.34.24
+	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/containerd/continuity v0.0.0-20200710164510-efbc4488d8fe // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
-	github.com/docker/go-units v0.3.3 // indirect
-	github.com/golang/mock v1.2.0
-	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
+	github.com/docker/go-units v0.4.0 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
-	github.com/ory/dockertest v3.3.4+incompatible
-	github.com/pkg/errors v0.8.1 // indirect
-	github.com/sirupsen/logrus v1.4.1 // indirect
-	github.com/stretchr/testify v1.2.2
-	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect
-	golang.org/x/sys v0.0.0-20190405154228-4b34438f7a67 // indirect
+	github.com/ory/dockertest v3.3.5+incompatible
+	github.com/sirupsen/logrus v1.6.0 // indirect
 )
