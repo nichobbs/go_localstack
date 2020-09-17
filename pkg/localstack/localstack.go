@@ -60,30 +60,31 @@ func (ls *Localstack) Destroy() error {
 // EndpointResolver is necessary to route traffic to AWS services in your code to the Localstack
 // endpoints.
 func (l Localstack) EndpointFor(service, region string, optFns ...func(*endpoints.Options)) (endpoints.ResolvedEndpoint, error) {
-	services  := []string{"apigateway",
-		"kinesis",
-		"dynamodb",
-		"dynamodbstreams",
-		"es",
-		"s3",
-		"firehose",
-		"lambda",
-		"sns",
-		"sqs",
-		"redshift",
-		"ses",
-		"route53",
-		"cloudformation",
-		"cloudwatch",
-		"ssm",
-		"secretsmanager",
-		"stepfunctions",
-		"logs",
-		"sts",
-		"iam"}
-	for _ ,v := range services {
-		if v == service {
-			return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4566/tcp")) }, nil
+	availableServices  := map[string]string {
+		"apigateway":"apigateway",
+		"kinesis":"kinesis",
+		"dynamodb":"dynamodb",
+		"streams.dynamodb": "dynamodbstreams",
+		"es":"es",
+		"s3":"s3",
+		"firehose":"firehose",
+		"lambda":"lambda",
+		"sns":"sns",
+		"sqs":"sqs",
+		"redshift":"redshift",
+		"email":"ses",
+		"route53":"route53",
+		"cloudformation":"cloudformation",
+		"monitoring":"cloudwatch",
+		"ssm":"ssm",
+		"secretsmanager":"secretsmanager",
+		"states":"stepfunctions",
+		"logs":"logs",
+		"sts":"sts",
+		"iam":"iam"}
+	for k := range availableServices {
+		if k == service && l.Services.Contains(availableServices[service]) {
+			return endpoints.ResolvedEndpoint{URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4566/tcp"))}, nil
 		}
 	}
 	return endpoints.DefaultResolver().EndpointFor(service, region, optFns...)
@@ -147,6 +148,10 @@ func getLocalstack(services *LocalstackServiceCollection, dockerWrapper DockerWr
 	return nil, nil
 }
 
+func newLocalstack(services *LocalstackServiceCollection, wrapper DockerWrapper, name, repository, tag string) (*Localstack, error) {
+	return newPersistentLocalstack(services, wrapper, name, repository, tag, "")
+}
+
 func newPersistentLocalstack(services *LocalstackServiceCollection, wrapper DockerWrapper, name, repository, tag string, data string) (*Localstack, error) {
 
 	localstack, err := getLocalstack(services, wrapper, name, repository, tag)
@@ -165,12 +170,12 @@ func newPersistentLocalstack(services *LocalstackServiceCollection, wrapper Dock
 				fmt.Sprintf("SERVICES=%s", services.GetServiceMap()),
 
 			},
-			PortBindings: map[docker.Port][]docker.PortBinding{
-				"4566": {{
-					HostPort: "4566",
-				}},
-			},
-			ExposedPorts: []string{"4566"},
+			//PortBindings: map[docker.Port][]docker.PortBinding{
+			//	"4566": {{
+			//		HostPort: "4566",
+			//	}},
+			//},
+			//ExposedPorts: []string{"4566"},
 
 		}
 		if len(data) > 0 {

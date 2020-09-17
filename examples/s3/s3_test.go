@@ -7,7 +7,7 @@ import (
     "os"
     "strings"
     "io/ioutil"
-    "github.com/mitchelldavis/go_localstack/pkg/localstack"
+    "github.com/nichobbs/go_localstack/pkg/localstack"
 
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/awserr"

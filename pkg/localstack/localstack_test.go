@@ -1,17 +1,17 @@
 package localstack
 
 import (
-    "fmt"
     "errors"
-    "log"
-    "testing"
-    "github.com/ory/dockertest"
-    "github.com/ory/dockertest/docker"
-    "github.com/mitchelldavis/go_localstack/pkg/mock_localstack"
-    "github.com/golang/mock/gomock"
+    "fmt"
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/endpoints"
-) 
+    "github.com/golang/mock/gomock"
+    "github.com/nichobbs/go_localstack/pkg/mock_localstack"
+    "github.com/ory/dockertest"
+    "github.com/ory/dockertest/docker"
+    "log"
+    "testing"
+)
 
 const (
     Localstack_Name = "testLocalstackName"
@@ -602,6 +602,7 @@ func Test_EndpointFor(t *testing.T) {
 
     c.NetworkSettings = &docker.NetworkSettings{
         Ports: map[docker.Port][]docker.PortBinding {
+            "4566/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9566" }},
             "4567/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9567" }},
             "4568/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9568" }},
             "4569/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9569" }},
@@ -629,87 +630,87 @@ func Test_EndpointFor(t *testing.T) {
     opt := func(opts *endpoints.Options) { }
 
     ep, _ := result.EndpointFor(endpoints.ApigatewayServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9567" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.KinesisServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9568" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.DynamodbServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9569" { // See DynamoDb specific test below
+    if ep.URL != "http://1.0.0.0:9566" { // See DynamoDb specific test below
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.StreamsDynamodbServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9570" { 
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL) 
     } 
     ep, _ = result.EndpointFor(endpoints.EsServiceID, "us-west-2", opt) 
-    if ep.URL != "http://1.0.0.0:9571" { 
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.S3ServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9572" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.FirehoseServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9573" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.LambdaServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9574" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SnsServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9575" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SqsServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9576" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.RedshiftServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9577" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.EmailServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9579" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.Route53ServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9580" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.CloudformationServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9581" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.MonitoringServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9582" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SsmServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9583" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SecretsmanagerServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9584" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.StatesServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9585" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.LogsServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9586" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.StsServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9592" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.IamServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9593" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
 }
@@ -750,6 +751,7 @@ func Test_EndpointFor_OnlyRegisteredServices(t *testing.T) {
 
     c.NetworkSettings = &docker.NetworkSettings{
         Ports: map[docker.Port][]docker.PortBinding {
+            "4566/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9566" }},
             "4567/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9567" }},
             "4568/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9568" }},
             "4569/tcp": []docker.PortBinding {docker.PortBinding { HostIP: "1.0.0.0", HostPort: "9569" }},
@@ -777,87 +779,87 @@ func Test_EndpointFor_OnlyRegisteredServices(t *testing.T) {
     opt := func(opts *endpoints.Options) { }
 
     ep, _ := result.EndpointFor(endpoints.ApigatewayServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9567" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.KinesisServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9568" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.DynamodbServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9569" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.StreamsDynamodbServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9570" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.EsServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9571" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.S3ServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9572" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.FirehoseServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9573" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.LambdaServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9574" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SnsServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9575" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SqsServiceID, "us-west-2", opt)
-    if ep.URL != "http://1.0.0.0:9576" {
+    if ep.URL != "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.RedshiftServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9577" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.EmailServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9579" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.Route53ServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9580" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.CloudformationServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9581" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.MonitoringServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9582" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SsmServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9583" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.SecretsmanagerServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9584" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.StatesServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9585" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.LogsServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9586" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.StsServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9592" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
     ep, _ = result.EndpointFor(endpoints.IamServiceID, "us-west-2", opt)
-    if ep.URL == "http://1.0.0.0:9593" {
+    if ep.URL == "http://1.0.0.0:9566" {
         t.Errorf("The return URL was not correct.  Received %s", ep.URL)
     }
 }

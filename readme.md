@@ -23,7 +23,7 @@ Build
 ---
 
 ```sh
-git clone git@github.com:mitchelldavis/go_localstack.git
+git clone git@github.com:nichobbs/go_localstack.git
 cd go_localstack
 make
 ```

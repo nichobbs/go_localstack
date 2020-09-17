@@ -17,7 +17,7 @@ import (
 //
 // For complete testing examples, see the examples in the github.com
 // repository. 
-// https://github.com/mitchelldavis/go_localstack/tree/master/examples 
+// https://github.com/nichobbs/go_localstack/tree/master/examples
 func Example_s3() {
     // LOCALSTACK: A reference to the Localstack object
     var LOCALSTACK *Localstack

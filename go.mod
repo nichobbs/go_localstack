@@ -11,6 +11,8 @@ require (
 	github.com/containerd/continuity v0.0.0-20200710164510-efbc4488d8fe // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
+	github.com/golang/mock v1.4.4
+	github.com/lib/pq v1.8.0 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
 	github.com/ory/dockertest v3.3.5+incompatible

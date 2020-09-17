@@ -5,7 +5,7 @@ import (
     "fmt"
     "testing"
     "os"
-    "github.com/mitchelldavis/go_localstack/pkg/localstack"
+    "github.com/nichobbs/go_localstack/pkg/localstack"
 
     //"github.com/aws/aws-sdk-go/service/apigateway"
     "github.com/aws/aws-sdk-go/service/kinesis"
