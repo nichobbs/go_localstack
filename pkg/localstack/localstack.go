@@ -27,7 +27,7 @@ import (
 // Localstack_Repository is the Localstack Docker repository
 const Localstack_Repository string = "localstack/localstack"
 // Localstack_Tag is the last tested version of the Localstack Docker repository
-const Localstack_Tag string = "0.9.1"
+const Localstack_Tag string = "0.11.5"
 
 // Localstack is a structure used to control the lifecycle of the Localstack 
 // Docker container.
@@ -60,72 +60,33 @@ func (ls *Localstack) Destroy() error {
 // EndpointResolver is necessary to route traffic to AWS services in your code to the Localstack
 // endpoints.
 func (l Localstack) EndpointFor(service, region string, optFns ...func(*endpoints.Options)) (endpoints.ResolvedEndpoint, error) {
-    if service == endpoints.ApigatewayServiceID && 
-       l.Services.Contains("apigateway") {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4567/tcp")) }, nil
-    } else if service == endpoints.KinesisServiceID &&
-              l.Services.Contains("kinesis") {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4568/tcp")) }, nil
-    } else if service == endpoints.DynamodbServiceID &&
-              l.Services.Contains("dynamodb") {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4569/tcp")) }, nil
-    } else if service == endpoints.StreamsDynamodbServiceID &&
-              l.Services.Contains("dynamodbstreams")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4570/tcp")) }, nil
-    } else if service == endpoints.EsServiceID &&
-              l.Services.Contains("es")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4571/tcp")) }, nil
-    } else if service == endpoints.S3ServiceID &&
-              l.Services.Contains("s3")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4572/tcp")) }, nil
-    } else if service == endpoints.FirehoseServiceID &&
-              l.Services.Contains("firehose")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4573/tcp")) }, nil
-    } else if service == endpoints.LambdaServiceID &&
-              l.Services.Contains("lambda")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4574/tcp")) }, nil
-    } else if service == endpoints.SnsServiceID &&
-              l.Services.Contains("sns")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4575/tcp")) }, nil
-    } else if service == endpoints.SqsServiceID &&
-              l.Services.Contains("sqs")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4576/tcp")) }, nil
-    } else if service == endpoints.RedshiftServiceID &&
-              l.Services.Contains("redshift")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4577/tcp")) }, nil
-    } else if service == endpoints.EmailServiceID &&
-              l.Services.Contains("ses")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4579/tcp")) }, nil
-    } else if service == endpoints.Route53ServiceID &&
-              l.Services.Contains("route53")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4580/tcp")) }, nil
-    } else if service == endpoints.CloudformationServiceID &&
-              l.Services.Contains("cloudformation")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4581/tcp")) }, nil
-    } else if service == endpoints.MonitoringServiceID &&
-              l.Services.Contains("cloudwatch")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4582/tcp")) }, nil
-    } else if service == endpoints.SsmServiceID &&
-              l.Services.Contains("ssm")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4583/tcp")) }, nil
-    } else if service == endpoints.SecretsmanagerServiceID &&
-              l.Services.Contains("secretsmanager")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4584/tcp")) }, nil
-    } else if service == endpoints.StatesServiceID &&
-              l.Services.Contains("stepfunctions")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4585/tcp")) }, nil
-    } else if service == endpoints.LogsServiceID &&
-              l.Services.Contains("logs")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4586/tcp")) }, nil
-    } else if service == endpoints.StsServiceID &&
-              l.Services.Contains("sts")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4592/tcp")) }, nil
-    } else if service == endpoints.IamServiceID &&
-              l.Services.Contains("iam")  {
-        return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4593/tcp")) }, nil
-    } else {
-        return endpoints.DefaultResolver().EndpointFor(service, region, optFns...)
-    }
+	services  := []string{"apigateway",
+		"kinesis",
+		"dynamodb",
+		"dynamodbstreams",
+		"es",
+		"s3",
+		"firehose",
+		"lambda",
+		"sns",
+		"sqs",
+		"redshift",
+		"ses",
+		"route53",
+		"cloudformation",
+		"cloudwatch",
+		"ssm",
+		"secretsmanager",
+		"stepfunctions",
+		"logs",
+		"sts",
+		"iam"}
+	for _ ,v := range services {
+		if v == service {
+			return endpoints.ResolvedEndpoint { URL: fmt.Sprintf("http://%s", l.Resource.GetHostPort("4566/tcp")) }, nil
+		}
+	}
+	return endpoints.DefaultResolver().EndpointFor(service, region, optFns...)
 }
 
 // CreateAWSSession should be used to make sure that your AWS SDK traffic is routing to Localstack correctly.
@@ -144,13 +105,21 @@ func NewLocalstack(services *LocalstackServiceCollection) (*Localstack, error) {
 	return NewSpecificLocalstack(services, "", Localstack_Repository, "latest")
 }
 
+func NewPersistentLocalstack(services *LocalstackServiceCollection,  data string) (*Localstack, error) {
+	return NewSpecificLocalstack(services, "", Localstack_Repository, "latest")
+}
+
 // NewSpecificLocalstack creates a new Localstack docker container based on
 // the given name, repository, and tag given.  NOTE:  The Docker image used should be a 
 // Localstack image.  The behavior is unknown otherwise.  This method is provided
 // to allow special situations like using a tag other than latest or when referencing 
 // an internal Localstack image.
 func NewSpecificLocalstack(services *LocalstackServiceCollection, name, repository, tag string) (*Localstack, error) {
-	return newLocalstack(services, &_DockerWrapper{ }, name, repository, tag)
+	return NewPersistentSpecificLocalstack(services, name, repository, tag, "")
+}
+
+func NewPersistentSpecificLocalstack(services *LocalstackServiceCollection, name, repository, tag, data string) (*Localstack, error) {
+	return newPersistentLocalstack(services, &_DockerWrapper{ }, name, repository, tag, data)
 }
 
 func getLocalstack(services *LocalstackServiceCollection, dockerWrapper DockerWrapper, name, repository, tag string) (*dockertest.Resource, error) {
@@ -178,7 +147,7 @@ func getLocalstack(services *LocalstackServiceCollection, dockerWrapper DockerWr
 	return nil, nil
 }
 
-func newLocalstack(services *LocalstackServiceCollection, wrapper DockerWrapper, name, repository, tag string) (*Localstack, error) {
+func newPersistentLocalstack(services *LocalstackServiceCollection, wrapper DockerWrapper, name, repository, tag string, data string) (*Localstack, error) {
 
 	localstack, err := getLocalstack(services, wrapper, name, repository, tag)
 	if err != nil {
@@ -188,14 +157,26 @@ func newLocalstack(services *LocalstackServiceCollection, wrapper DockerWrapper,
 	if localstack == nil {
 
 		// Fifth, If we didn't find a running container before, we spin one up now.
-		localstack, err = wrapper.RunWithOptions(&dockertest.RunOptions{
+		options := &dockertest.RunOptions{
 			Repository: repository,
 			Tag: tag,
-            Name: name, //If name == "", docker ignores it.
+			Name: name, //If name == "", docker ignores it.
 			Env: []string{
 				fmt.Sprintf("SERVICES=%s", services.GetServiceMap()),
+
 			},
-		})
+			PortBindings: map[docker.Port][]docker.PortBinding{
+				"4566": {{
+					HostPort: "4566",
+				}},
+			},
+			ExposedPorts: []string{"4566"},
+
+		}
+		if len(data) > 0 {
+			options.Env = append(options.Env, fmt.Sprintf("DATA_DIR=%s", data))
+		}
+		localstack, err = wrapper.RunWithOptions(options)
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("Could not start resource: %s", err))
 		}
