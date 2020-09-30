@@ -111,6 +111,10 @@ func NewPersistentLocalstack(services *LocalstackServiceCollection, data string)
 	return NewPersistentSpecificLocalstack(services, "", LocalstackRepository, "latest", data)
 }
 
+func NewNamedPersistentLocalstack(services *LocalstackServiceCollection, name, data string) (*Localstack, error) {
+	return NewPersistentSpecificLocalstack(services, name, LocalstackRepository, "latest", data)
+}
+
 // NewSpecificLocalstack creates a new Localstack docker container based on
 // the given name, repository, and tag given.  NOTE:  The Docker image used should be a
 // Localstack image.  The behaviour is unknown otherwise.  This method is provided
@@ -171,6 +175,7 @@ func newPersistentLocalstack(services *LocalstackServiceCollection, wrapper Dock
 			Env: []string{
 				fmt.Sprintf("SERVICES=%s", services.GetServiceMap()),
 			},
+
 			// PortBindings: map[docker.Port][]docker.PortBinding{
 			//	"4566": {{
 			//		HostPort: "4566",
@@ -181,6 +186,7 @@ func newPersistentLocalstack(services *LocalstackServiceCollection, wrapper Dock
 		}
 		if len(data) > 0 {
 			options.Env = append(options.Env, fmt.Sprintf("DATA_DIR=%s", data))
+			options.Mounts = []string{"/tmp/localstack/data:/tmp/localstack/data"}
 		}
 		localstack, err = wrapper.RunWithOptions(options)
 		if err != nil {

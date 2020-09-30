@@ -65,7 +65,7 @@ func NewLocalstackService(name string) (*LocalstackService, error) {
 		"cloudformation",
 		"cloudwatch",
 		"ssm",
-		"secrestmanager",
+		"secretsmanager",
 		"stepfunctions",
 		"logs",
 		"sts",
